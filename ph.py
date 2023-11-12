@@ -6,7 +6,7 @@ import urllib.request
 f = open("input_ph.txt", "r",encoding="utf-8")
 n = 0 
 with open("ph.m3u", 'w',encoding="utf-8") as file_o:
-    file_o.write(r'PH\n')
+    file_o.write(r'')
     
 for line in f:
     n = n+1
