@@ -6,7 +6,7 @@ import urllib.request
 from urllib.request import urlopen, Request
 with open("xh.m3u", 'w') as file_o:
     file_o.write(r'#EXTM3U ***selected XH medias***')
-f = open("input_xh.txt", "r")
+f = open("xh_input.txt", "r")
 index = 0
 for line in f:
     print("processing"+str(line))
