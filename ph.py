@@ -17,16 +17,19 @@ for line in f:
             continue
         try:
             data = urllib.request.urlopen(line)
+            tree = html.fromstring(data.read()) 
+            item = tree.xpath(r'//*[@id="player"]/script[1]/text()')
+            title = tree.xpath(r'//h1/span')[0].text
         except urllib.error.HTTPError as e:
             print(e)
             continue
-        tree = html.fromstring(data.read()) 
+        except Exception as e2:
+            print ("Error",e2)
+            continue
         #/html/body/div[5]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/script[1]/text()
         #//*[@id="player"]/script[1]/text()
         #//*[@id="hd-leftColVideoPage"]/div[1]/div[4]/h1/span
-        item = tree.xpath(r'//*[@id="player"]/script[1]/text()')
         #title = tree.xpath(r'//*[@id="videoTitle"]/span')[0].text
-        title = tree.xpath(r'//h1/span')[0].text
         if(len(item)>0):
             res = item[0]
             #print(res)
