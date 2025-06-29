@@ -13,8 +13,9 @@ n = len(sys.argv)
 if n>2:
     bs = sys.argv[1]
     es = sys.argv[2]
-elif n>1:
-    bs = sys.argv[1]
+else:
+    print("pass 2 number argument for lines to process")
+    exit()
 beg = int(bs)
 end = int(es)
 f = open("_input.txt", "r",encoding="utf-8")
@@ -25,19 +26,19 @@ with open(dst, 'w',encoding="utf-8") as file_o:
     file_o.write(r'')
 
 for line in f:
-    print("line: ",n)
     n = n+1
     if end>0 and (n>end):
         break
     if (n<beg):
         continue
     if not line.startswith('#'):
-        print("\nprocessing: line "+str(n)+": "+str(line))
+        
         if(line.strip()==""):
             continue
         
 
         if( line.startswith("https://www.pornhub")):
+            print("\nPornHub "+str(n)+": "+str(line))
             try:
                 data = urllib.request.urlopen(line)
                 tree = html.fromstring(data.read()) 
@@ -85,30 +86,27 @@ for line in f:
                                 
                     print("final: "+l)
         elif(line.startswith("https://xhamster")):
+            print("\nXHamster "+str(n)+": "+str(line))
             headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}
             #reg_url = r'https://xhamster.com/videos/cory-chase-xh4wieL'
             #reg_url = r'https://xhamster.com/videos/oh-yeah-stepdaddy-fuck-me-while-no-one-sees-xhyhNvv'
             reg_url = line
-            req = Request(url=reg_url,headers=headers)
-            h = urlopen(req).read()
-            #data = urllib.request.urlopen(line)
-            #tree = html.fromstring(data.read()) 
-            tree = html.fromstring(h) 
-            #/html/head/link[27]
-
-            #/html/head/link[27]
-            items = tree.xpath(r'/html/head/link')
-            #item = tree.xpath(r'//*[@id="player"]/script[1]/text()')
-            #title = tree.xpath(r'//*[@id="videoTitle"]/span')[0].text
-            title = str(n) +"."+ tree.xpath(r'//title')[0].text
-            for i in items:
-                
-                l= i.attrib['href']
-                if l.endswith("m3u8"):
-                    print("link: "+l+"\n")
-                    with open(dst, 'a') as file_o:
-                        file_o.write(r'#EXTINF:-1 #EXTINF:-1  group-title="xh",'+title+"\n")
-                        file_o.write(l+"\n")                       
+            try:
+                req = Request(url=reg_url,headers=headers)
+                h = urlopen(req).read()
+                tree = html.fromstring(h) 
+                items = tree.xpath(r'/html/head/link')
+                title = str(n) +"."+ tree.xpath(r'//title')[0].text
+                for i in items:
+                    
+                    l= i.attrib['href']
+                    if l.endswith("m3u8"):
+                        print("link: "+l+"\n")
+                        with open(dst, 'a') as file_o:
+                            file_o.write(r'#EXTINF:-1 #EXTINF:-1  group-title="xh",'+title+"\n")
+                            file_o.write(l+"\n")                       
+            except Exception as e:
+                print (e)
         
 f.close()
 #f = open("input_ph.txt", "w")
